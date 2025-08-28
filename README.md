@@ -55,6 +55,8 @@ npm install
 MONGO_URI=mongodb://localhost:27017/todoapp
 PORT=3000
 JWT_SECRET=your_secret
+MAIL_USER=
+MAIL_PASS=
 
 # Chạy server
 npm start
