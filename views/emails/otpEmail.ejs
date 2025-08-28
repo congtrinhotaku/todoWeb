@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    h2 { color: #2c3e50; }
+    .otp { font-size: 24px; font-weight: bold; color: #e74c3c; letter-spacing: 3px; }
+    .footer { margin-top: 20px; font-size: 12px; color: #7f8c8d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Xin chào <%= username %>,</h2>
+    <p>Cảm ơn bạn đã đăng ký Todo App.</p>
+    <p>Mã OTP của bạn là:</p>
+    <p class="otp"><%= otp %></p>
+    <p>Mã này có hiệu lực trong 5 phút.</p>
+    <div class="footer">Nếu bạn không đăng ký, hãy bỏ qua email này.</div>
+  </div>
+</body>
+</html>

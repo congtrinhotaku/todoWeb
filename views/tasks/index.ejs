@@ -1,0 +1,252 @@
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="col mb-4">Bảng công việc</h2>
+    <div class="col col-auto">
+      <a href="/tasks/new" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Thêm task mới
+      </a>
+    </div>
+  </div>
+  <form method="GET" action="/tasks" class="mb-3">
+    <div class="row g-2 align-items-center">
+      <!-- Lọc theo danh mục -->
+      <div class="col-md-3">
+        <select name="category" class="form-select" onchange="this.form.submit()">
+          <option value="">-- Xem tất cả danh mục --</option>
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat._id %>" <%= (selectedCategory == cat._id ? "selected" : "") %>>
+              <%= cat.name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Chọn ngày + nút tới lui -->
+      <div class="col-md-4 d-flex align-items-center">
+        <button type="button" class="btn btn-outline-secondary me-2" onclick="shiftDate(-1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <input 
+          type="date" 
+          name="date" 
+          id="filterDate" 
+          class="form-control text-center" 
+          value="<%= selectedDate || todayStr %>">
+        <button type="button" class="btn btn-outline-secondary ms-2" onclick="shiftDate(1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Các nút lọc thời gian -->
+      <div class="col-md-5 d-flex gap-2">
+        <button type="submit" name="range" value="day" class="btn btn-outline-primary <%= (selectedRange === 'day' ? 'active' : '') %>">Ngày</button>
+        <button type="submit" name="range" value="week" class="btn btn-outline-primary <%= (selectedRange === 'week' ? 'active' : '') %>">Tuần</button>
+        <button type="submit" name="range" value="month" class="btn btn-outline-primary <%= (selectedRange === 'month' ? 'active' : '') %>">Tháng</button>
+        <button type="submit" name="range" value="all" class="btn btn-outline-primary <%= (selectedRange === 'all' ? 'active' : '') %>">Tất Cả</button>
+      </div>
+    </div>
+  </form>
+
+
+
+
+
+
+
+  <div class="row g-3">
+
+    <!-- Chưa làm -->
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white fw-bold">Chưa làm</div>
+        <div class="card-body">
+          <% if (tasks.todo.length > 0) { %>
+            <% tasks.todo.forEach(task => { %>
+              <div class="card mb-3 border-danger">
+                <div class="card-body">
+                  <h6 class="fw-bold">
+                    <%= task.title %>
+                    <span class="badge bg-info text-dark"><%= task.priority || "Chưa đặt" %></span>
+                  </h6>
+                  <small class="text-muted d-block">Danh mục: <%= task.category?.name || "Không có" %></small>
+                  <small class="text-muted d-block">Hạn chót: <%= task.deadline ? task.deadline.toLocaleDateString("vi-VN") : "Không có" %></small>
+                  <p class="mt-2"><%= task.description || "Không có mô tả" %></p>
+
+                  <div class="d-flex flex-wrap justify-content-between mt-3 gap-2">
+                    <a href="/tasks/<%= task._id %>/edit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-pencil-square"></i> Sửa
+                    </a>
+                    <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa task này?')">
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Xóa
+                      </button>
+                    </form>
+                    <!-- Bắt đầu -->
+                    <form action="/tasks/<%= task._id %>/status" method="POST">
+                      <input type="hidden" name="status" value="Đang làm">
+                      <button type="submit" class="btn btn-sm btn-warning">Bắt đầu</button>
+                    </form>
+                    <!-- Hoãn -->
+                    <form action="/tasks/<%= task._id %>/status" method="POST">
+                      <input type="hidden" name="status" value="Hoãn">
+                      <button type="submit" class="btn btn-sm btn-secondary">Hoãn</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-muted">Không có công việc</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Đang làm -->
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">Đang làm</div>
+        <div class="card-body">
+          <% if (tasks.doing.length > 0) { %>
+            <% tasks.doing.forEach(task => { %>
+              <div class="card mb-3 border-warning">
+                <div class="card-body">
+                  <h6 class="fw-bold">
+                    <%= task.title %>
+                    <span class="badge bg-info text-dark"><%= task.priority || "Chưa đặt" %></span>
+                  </h6>
+                  <small class="text-muted d-block">Danh mục: <%= task.category?.name || "Không có" %></small>
+                  <small class="text-muted d-block">Hạn chót: <%= task.deadline ? task.deadline.toLocaleDateString("vi-VN") : "Không có" %></small>
+                  <p class="mt-2"><%= task.description || "Không có mô tả" %></p>
+
+                  <div class="d-flex flex-wrap justify-content-between mt-3 gap-2">
+                    <a href="/tasks/<%= task._id %>/edit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-pencil-square"></i> Sửa
+                    </a>
+                    <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa task này?')">
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Xóa
+                      </button>
+                    </form>
+                    <!-- Làm xong -->
+                    <form action="/tasks/<%= task._id %>/status" method="POST">
+                      <input type="hidden" name="status" value="Hoàn thành">
+                      <button type="submit" class="btn btn-sm btn-success">Làm xong</button>
+                    </form>
+                    <!-- Hoãn -->
+                    <form action="/tasks/<%= task._id %>/status" method="POST">
+                      <input type="hidden" name="status" value="Hoãn">
+                      <button type="submit" class="btn btn-sm btn-secondary">Hoãn</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-muted">Không có công việc</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hoàn thành -->
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white fw-bold">Hoàn thành</div>
+        <div class="card-body">
+          <% if (tasks.done.length > 0) { %>
+            <% tasks.done.forEach(task => { %>
+              <div class="card mb-3 border-success">
+                <div class="card-body">
+                  <h6 class="fw-bold">
+                    <%= task.title %>
+                    <span class="badge bg-info text-dark"><%= task.priority || "Chưa đặt" %></span>
+                  </h6>
+                  <small class="text-muted d-block">Danh mục: <%= task.category?.name || "Không có" %></small>
+                  <small class="text-muted d-block">Hạn chót: <%= task.deadline ? task.deadline.toLocaleDateString("vi-VN") : "Không có" %></small>
+                  <p class="mt-2"><%= task.description || "Không có mô tả" %></p>
+
+                  <div class="d-flex justify-content-between mt-3">
+                    <a href="/tasks/<%= task._id %>/edit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-pencil-square"></i> Sửa
+                    </a>
+                    <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa task này?')">
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Xóa
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-muted">Không có công việc</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hoãn -->
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white fw-bold">Hoãn</div>
+        <div class="card-body">
+          <% if (tasks.postponed.length > 0) { %>
+            <% tasks.postponed.forEach(task => { %>
+              <div class="card mb-3 border-secondary">
+                <div class="card-body">
+                  <h6 class="fw-bold">
+                    <%= task.title %>
+                    <span class="badge bg-info text-dark"><%= task.priority || "Chưa đặt" %></span>
+                  </h6>
+                  <small class="text-muted d-block">Danh mục: <%= task.category?.name || "Không có" %></small>
+                  <small class="text-muted d-block">Hạn chót: <%= task.deadline ? task.deadline.toLocaleDateString("vi-VN") : "Không có" %></small>
+                  <p class="mt-2"><%= task.description || "Không có mô tả" %></p>
+
+                  <div class="d-flex flex-wrap justify-content-between mt-3 gap-2">
+                    <a href="/tasks/<%= task._id %>/edit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-pencil-square"></i> Sửa
+                    </a>
+                    <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa task này?')">
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Xóa
+                      </button>
+                    </form>
+                    <!-- Tiếp tục -->
+                    <form action="/tasks/<%= task._id %>/status" method="POST">
+                      <input type="hidden" name="status" value="Chưa làm">
+                      <button type="submit" class="btn btn-sm btn-warning">Tiếp tục</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-muted">Không có công việc</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+  <!-- Đặt script ngay dưới form -->
+  <script>
+    function shiftDate(direction) {
+      const dateInput = document.getElementById("filterDate");
+      const form = dateInput.form;
+
+      const current = dateInput.value ? new Date(dateInput.value) : new Date();
+
+      if ("<%= selectedRange %>" === "week") {
+        current.setDate(current.getDate() + direction * 7);
+      } else if ("<%= selectedRange %>" === "month") {
+        current.setMonth(current.getMonth() + direction);
+      } else {
+        current.setDate(current.getDate() + direction);
+      }
+
+      dateInput.value = current.toISOString().split("T")[0];
+      form.submit(); // submit giữ nguyên category hiện tại
+    }
+  </script>
