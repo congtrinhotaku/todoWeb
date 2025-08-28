@@ -28,16 +28,7 @@ Dự án xây dựng bằng **Node.js + Express + MongoDB (Mongoose) + EJS** the
 ---
 
 ## 📂 Cấu trúc thư mục
-todoweb/
-├── config/          # Cấu hình DB, mailer
-├── controllers/     # Xử lý logic
-├── middlewares/     # Middleware
-├── models/          # Mongoose schema (User, Task, Category)
-├── public/          # CSS, JS, hình ảnh tĩnh
-├── routes/          # Định tuyến (auth, task, category)
-├── views/           # Giao diện EJS
-├── app.js           # Entry point
-└── .env             # Biến môi trường
+<img width="617" height="315" alt="image" src="https://github.com/user-attachments/assets/bafa4655-20db-49c7-b4fc-9312b61b4d7e" />
 
 
 ---
@@ -52,11 +43,8 @@ cd todoWeb
 npm install
 
 # Tạo file .env và cấu hình biến môi trường (ví dụ:)
-MONGO_URI=mongodb://localhost:27017/todoapp
-PORT=3000
-JWT_SECRET=your_secret
-MAIL_USER=
-MAIL_PASS=
+<img width="395" height="122" alt="image" src="https://github.com/user-attachments/assets/c5169e10-4a11-497e-bc19-cbff7169047d" />
+
 
 # Chạy server
 npm start
